@@ -80,7 +80,7 @@ def pocitac():
                     hraci_pole_cele[pc_y][pc_x] = "⬜️"
                     hraci_pole_hodnoty[pc_y][pc_x] = "n"
                     nenalezeno = nenalezeno + 1
-                    if nenalezeno > 1000:
+                    if nenalezeno > 10:
                         nenalezeno = 0
                         nyni_pocitac = nyni_pocitac - 1
                         pocitac_odehral = "ne"
