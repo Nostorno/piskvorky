@@ -8,7 +8,7 @@ vyherce = ""
 jedna_kombinace = ""
 kombinace = []
 start = "ano"
-nyni_pocitac = int(1)
+nyni_pocitac = 1
 nyni_hrac = 1
 nyni_posledni = 0
 nenalezeno = 0
@@ -44,6 +44,7 @@ def vykresleni_hodnoty():
 def pocitac():
     global start, nyni_posledni, nenalezeno, nyni_pocitac
     pocitac_odehral = "ne"
+    nyni_posledni = nyni_pocitac
     while pocitac_odehral != "ano":
         if start == "ano":
             pc_x = random.randint(4, 5)
@@ -68,10 +69,11 @@ def pocitac():
 
                 print(kombinace, nenalezeno, nyni_pocitac, nyni_posledni, nyni_hrac)
 
-                nyni_posledni = nyni_pocitac
+                # nyni_posledni = nyni_pocitac
                 vyhodnoceni()
                 if nyni_pocitac > nyni_posledni:
                     pocitac_odehral = "ano"
+                    nenalezeno = 0
                     os.system("cls")
                     vykresleni_hodnoty()
                     print("hodnoty")
@@ -80,9 +82,10 @@ def pocitac():
                     hraci_pole_cele[pc_y][pc_x] = "⬜️"
                     hraci_pole_hodnoty[pc_y][pc_x] = "n"
                     nenalezeno = nenalezeno + 1
-                    if nenalezeno > 10:
+                    if nenalezeno > 1000:
                         nenalezeno = 0
                         nyni_pocitac = nyni_pocitac - 1
+                        nyni_posledni = nyni_pocitac
                         pocitac_odehral = "ne"
             else:
                 pocitac_odehral = "ne"
@@ -119,9 +122,11 @@ def vyhodnoceni():
     global vyherce, nyni_pocitac, nyni_hrac
     for ccc in range(0, 10):
         jedna_kombinace = "".join(hraci_pole_hodnoty[ccc][0:10])
+        jedna_kombinace = "x" + jedna_kombinace + "x"
         kombinace.append(jedna_kombinace)
     for ddd in range(0, 10):
         jedna_kombinace = "".join([seznam[ddd] for seznam in hraci_pole_hodnoty])
+        jedna_kombinace = "x" + jedna_kombinace + "x"
         kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[4][0]
@@ -130,6 +135,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[1][3]
         + hraci_pole_hodnoty[0][4]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[5][0]
@@ -139,6 +145,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[1][4]
         + hraci_pole_hodnoty[0][5]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[6][0]
@@ -149,6 +156,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[1][5]
         + hraci_pole_hodnoty[0][6]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[7][0]
@@ -160,6 +168,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[1][6]
         + hraci_pole_hodnoty[0][7]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[8][0]
@@ -172,6 +181,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[1][7]
         + hraci_pole_hodnoty[0][8]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[9][0]
@@ -185,6 +195,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[1][8]
         + hraci_pole_hodnoty[0][9]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[9][1]
@@ -197,6 +208,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[2][8]
         + hraci_pole_hodnoty[1][9]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[9][2]
@@ -208,6 +220,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[3][8]
         + hraci_pole_hodnoty[2][9]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[9][3]
@@ -218,6 +231,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[4][8]
         + hraci_pole_hodnoty[3][9]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[9][4]
@@ -227,6 +241,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[5][8]
         + hraci_pole_hodnoty[4][9]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[9][5]
@@ -235,6 +250,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[6][8]
         + hraci_pole_hodnoty[5][9]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[5][0]
@@ -243,7 +259,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[8][3]
         + hraci_pole_hodnoty[9][4]
     )
-    kombinace.append(jedna_kombinace)
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[4][0]
@@ -253,6 +269,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[8][4]
         + hraci_pole_hodnoty[9][5]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[3][0]
@@ -263,6 +280,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[8][5]
         + hraci_pole_hodnoty[9][6]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[2][0]
@@ -274,6 +292,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[8][6]
         + hraci_pole_hodnoty[9][7]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[1][0]
@@ -286,6 +305,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[8][7]
         + hraci_pole_hodnoty[9][8]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[0][0]
@@ -299,6 +319,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[8][8]
         + hraci_pole_hodnoty[9][9]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[0][1]
@@ -311,6 +332,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[7][8]
         + hraci_pole_hodnoty[8][9]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[0][2]
@@ -322,6 +344,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[6][8]
         + hraci_pole_hodnoty[7][9]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[0][3]
@@ -332,6 +355,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[5][8]
         + hraci_pole_hodnoty[6][9]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[0][4]
@@ -341,6 +365,7 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[4][8]
         + hraci_pole_hodnoty[5][9]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
     jedna_kombinace = (
         hraci_pole_hodnoty[0][5]
@@ -349,29 +374,52 @@ def vyhodnoceni():
         + hraci_pole_hodnoty[3][8]
         + hraci_pole_hodnoty[4][9]
     )
+    jedna_kombinace = "x" + jedna_kombinace + "x"
     kombinace.append(jedna_kombinace)
 
     for aaa in kombinace:
-        if "ccccc" in aaa:
-            vyherce = "pocitac"
-            nyni_pocitac = 5
-        elif "cccc" in aaa and nyni_pocitac == 3 and "zccccz" not in aaa:
-            nyni_pocitac = 4
-        elif (
-            "ccc" in aaa
-            and nyni_pocitac == (2 or 3)
-            and "zcccz" not in aaa
-            and "zccccz" not in aaa
-        ):
-            nyni_pocitac = 3
-        elif (
+        if (
             "cc" in aaa
-            and nyni_pocitac == (1 or 2)
+            and nyni_pocitac == 1
             and "zccz" not in aaa
             and "zcccz" not in aaa
             and "zccccz" not in aaa
+            and "xccccz" not in aaa
+            and "zccccx" not in aaa
+            and "zncccz" not in aaa
+            and "zcccnz" not in aaa
+            and "xncccz" not in aaa
+            and "zcccnx" not in aaa
+            and "znnccz" not in aaa
+            and "zccnnz" not in aaa
+            and "xnnccz" not in aaa
+            and "zccnnx" not in aaa
         ):
             nyni_pocitac = 2
+        elif (
+            "ccc" in aaa
+            and nyni_pocitac == 2
+            and "zcccz" not in aaa
+            and "zccccz" not in aaa
+            and "xccccz" not in aaa
+            and "zccccx" not in aaa
+            and "zncccz" not in aaa
+            and "zcccnz" not in aaa
+            and "xncccz" not in aaa
+            and "zcccnx" not in aaa
+        ):
+            nyni_pocitac = 3
+        elif (
+            "cccc" in aaa
+            and nyni_pocitac == 3
+            and "zccccz" not in aaa
+            and "xccccz" not in aaa
+            and "zccccx" not in aaa
+        ):
+            nyni_pocitac = 4
+        elif "ccccc" in aaa:
+            vyherce = "pocitac"
+            nyni_pocitac = 5
 
         elif "zz" in aaa and nyni_hrac == 1:
             nyni_hrac = 2
