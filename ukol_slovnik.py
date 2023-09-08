@@ -18,6 +18,7 @@ hodnoceni = {}
 
 # vytvori new slovnik a priradi hodnoceni
 for klic in studenti:
+    print(klic)
     aaa = studenti[klic]
     if aaa < 71:
         hodnoceni[klic] = "nesplneno"

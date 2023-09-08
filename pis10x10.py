@@ -9,9 +9,14 @@ jedna_kombinace = ""
 kombinace = []
 start = "ano"
 nyni_pocitac = 1
-nyni_hrac = 1
+nyni_hrac = 0
+hrac_posledni = 0
+hrac_posledni2 = 0
 nyni_posledni = 0
 nenalezeno = 0
+suoradnice_hrace = 0
+tahy_hrace = []
+vhodna_finalni = 0
 
 for cislo in range(1, 11):
     rada = ["⬜️"] * 10
@@ -41,8 +46,29 @@ def vykresleni_hodnoty():
                 print(hraci_pole_hodnoty[aaa][bbb])
 
 
+def pc_hrac():
+    global posledni_hrac, souradnice_hrace, posledni_hrac2, nyni_hrac
+    posledni_hrac2 = nyni_hrac
+    if nyni_hrac >= 1:
+        for fff in range(1, 250):
+            pc_x = random.randint(0, 9)
+            pc_y = random.randint(0, 9)
+            pc_tah = hraci_pole_hodnoty[pc_y][pc_x]
+            if pc_tah == "n":
+                hraci_pole_hodnoty[pc_y][pc_x] = "z"
+                vyhodnoceni()
+                hraci_pole_hodnoty[pc_y][pc_x] = "n"
+                if nyni_hrac > posledni_hrac2:
+                    souradnice_hrace = str(pc_x) + str(pc_y)
+                    print(pc_x, pc_y)
+                    tahy_hrace.append(souradnice_hrace)
+
+            nyni_hrac = posledni_hrac2
+            print(tahy_hrace, nyni_hrac, posledni_hrac2)
+
+
 def pocitac():
-    global start, nyni_posledni, nenalezeno, nyni_pocitac
+    global start, nyni_posledni, nenalezeno, nyni_pocitac, vhodna_finalni
     pocitac_odehral = "ne"
     nyni_posledni = nyni_pocitac
     while pocitac_odehral != "ano":
@@ -62,22 +88,33 @@ def pocitac():
         else:
             pc_x = random.randint(0, 9)
             pc_y = random.randint(0, 9)
+            vhodna_finalni = str(pc_x) + str(pc_y)
             pc_tah = hraci_pole_hodnoty[pc_y][pc_x]
             if pc_tah == "n":
                 hraci_pole_cele[pc_y][pc_x] = "🟥"
                 hraci_pole_hodnoty[pc_y][pc_x] = "c"
-
                 print(kombinace, nenalezeno, nyni_pocitac, nyni_posledni, nyni_hrac)
-
-                # nyni_posledni = nyni_pocitac
                 vyhodnoceni()
+
                 if nyni_pocitac > nyni_posledni:
-                    pocitac_odehral = "ano"
-                    nenalezeno = 0
-                    os.system("cls")
-                    vykresleni_hodnoty()
-                    print("hodnoty")
-                    vykresleni_pole()
+                    nyni_pocitac = nyni_pocitac - 1
+                    if nenalezeno < 750:
+                        if vhodna_finalni in tahy_hrace:
+                            pocitac_odehral = "ano"
+                            nenalezeno = 0
+                            os.system("cls")
+                            vykresleni_hodnoty()
+                            print("hodnoty")
+                            vykresleni_pole()
+
+                        else:
+                            pocitac_odehral = "ano"
+                            nenalezeno = 0
+                            os.system("cls")
+                            vykresleni_hodnoty()
+                            print("hodnoty")
+                            vykresleni_pole()
+
                 else:
                     hraci_pole_cele[pc_y][pc_x] = "⬜️"
                     hraci_pole_hodnoty[pc_y][pc_x] = "n"
@@ -119,7 +156,7 @@ def hrac():
 
 def vyhodnoceni():
     kombinace = []
-    global vyherce, nyni_pocitac, nyni_hrac
+    global vyherce, nyni_pocitac, nyni_hrac, hrac_posledni
     for ccc in range(0, 10):
         jedna_kombinace = "".join(hraci_pole_hodnoty[ccc][0:10])
         jedna_kombinace = "x" + jedna_kombinace + "x"
@@ -378,6 +415,7 @@ def vyhodnoceni():
     kombinace.append(jedna_kombinace)
 
     for aaa in kombinace:
+        hrac_posledni = nyni_hrac
         if (
             "cc" in aaa
             and nyni_pocitac == 1
@@ -421,20 +459,41 @@ def vyhodnoceni():
             vyherce = "pocitac"
             nyni_pocitac = 5
 
-        elif "zz" in aaa and nyni_hrac == 1:
-            nyni_hrac = 2
-        elif "zzz" in aaa and nyni_hrac == 2:
-            nyni_hrac = 3
-        elif "zzzz" in aaa and nyni_hrac == 3:
-            nyni_hrac = 4
-        elif "zzzzz" in aaa:
+        if "zzzzz" in aaa:
             vyherce = "hrac"
+            nyni_hrac = 5
+            if hrac_posledni >= nyni_hrac:
+                nyni_hrac = hrac_posledni
+
+        elif "zzzz" in aaa:
+            nyni_hrac = 4
+            if hrac_posledni >= nyni_hrac:
+                nyni_hrac = hrac_posledni
+
+        elif "zzz" in aaa:
+            nyni_hrac = 3
+            if hrac_posledni >= nyni_hrac:
+                nyni_hrac = hrac_posledni
+
+        elif "zz" in aaa:
+            nyni_hrac = 2
+            if hrac_posledni >= nyni_hrac:
+                nyni_hrac = hrac_posledni
+
+        elif "z" in aaa:
+            nyni_hrac = 1
+            if hrac_posledni >= nyni_hrac:
+                nyni_hrac = hrac_posledni
 
     return
 
 
 for x in range(0, 50):
+    pc_hrac()
+    vyherce = ""
+    print(nenalezeno, nyni_pocitac, nyni_posledni, nyni_hrac)
     pocitac()
+    tahy_hrace = []
     vyhodnoceni()
     if vyherce == "pocitac":
         print("vyhral pocitac!")
