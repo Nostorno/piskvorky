@@ -1,5 +1,4 @@
 import os, random
-from data10x10 import moznosti_hrac_2, moznosti_hrac_3, moznosti_hrac_4
 
 os.system("cls")
 
@@ -10,7 +9,6 @@ prvni_kolo = False  # pro prvni kolo pocitace
 nyni_hrac = 0  # maximalni dosazeny pocet hrace
 nyni_pocitac = 1  # maximalni dosazeny pocet pc
 tahy_hrace = []
-budouci = 0
 
 
 def vytvoreni_seznamu():  # funkce seznamu plochy a hodnot
@@ -44,11 +42,10 @@ def hodnoty():  # vypise hodnoty hraci plochy
 
 
 # zobrazeni herniho stavu
-def informace(prvni_kolo, nyni_pocitac, nyni_hrac, budouci):
+def informace(prvni_kolo, nyni_pocitac, nyni_hrac):
     print(f"Pc 1 kolo: {prvni_kolo}")
     print(f"Pc ma nyni: {nyni_pocitac} v rade.")
     print(f"Hrac ma nyni: {nyni_hrac} v rade.")
-    print(f"Hrac v dalsim kole: {budouci} v rade.")
     return
 
 
@@ -75,7 +72,7 @@ def hrac():
 
 
 def vyhodnoceni(nyni_pocitac, nyni_hrac):
-    kombinace = []  # seznam hernich moznosti
+    kombinace = []
     for radky in range(10):  # kombinace radky
         jedna_kombinace = "".join(hraci_seznam_hodnoty[radky][0:10])
         jedna_kombinace = "x" + jedna_kombinace + "x"
@@ -118,9 +115,7 @@ def vyhodnoceni(nyni_pocitac, nyni_hrac):
         kombinace.append(jedna_kombinace)
         jedna_kombinace = ""
 
-    testovaci = 0
-
-    for seznam in kombinace:  # projde seznam kombinace
+    for seznam in kombinace:
         if (
             "cc" in seznam
             and nyni_pocitac < 2
@@ -165,38 +160,23 @@ def vyhodnoceni(nyni_pocitac, nyni_hrac):
         elif "ccccc" in seznam:
             nyni_pocitac = 5
 
-        if "z" in seznam:
-            nyni_hrac = 1
-        for moznosti2 in moznosti_hrac_2:
-            if moznosti2 in seznam:
-                nyni_hrac = 2
-        for moznosti3 in moznosti_hrac_3:
-            if moznosti3 in seznam:
-                nyni_hrac = 3
-        for moznosti4 in moznosti_hrac_4:
-            if moznosti4 in seznam:
-                nyni_hrac = 4
-        if "zzzzz" in seznam:
+        if "zzzzz" in seznam and nyni_hrac < 5:
             nyni_hrac = 5
+        elif "zzzz" in seznam and nyni_hrac < 4:
+            nyni_hrac = 4
+        elif "zzz" in seznam and nyni_hrac < 3:
+            nyni_hrac = 3
+        elif "zz" in seznam and nyni_hrac < 2:
+            nyni_hrac = 2
+        elif "z" in seznam and nyni_hrac < 1:
+            nyni_hrac = 1
 
-        if testovaci < nyni_hrac:
-            testovaci = nyni_hrac
-    nyni_hrac = testovaci
     return nyni_pocitac, nyni_hrac
 
 
-def pocitac(prvni_kolo, nyni_pocitac, nyni_hrac, budouci):
+def pocitac(prvni_kolo, nyni_pocitac, nyni_hrac):
     pocitac_odehral = False  # zda PC odehral
     nenalezeno = 0  # pocet opakovani v pripade nevhodneho tahu
-    if budouci > 3:  # hrac +3, pole vybrano ze seznamu
-        pc_x = int(tahy_hrace[0][0])
-        pc_y = int(tahy_hrace[0][1])
-        hraci_seznam[pc_y][pc_x] = "🟥"
-        hraci_seznam_hodnoty[pc_y][pc_x] = "c"
-        os.system("cls")
-        hraci_plocha()
-        pocitac_odehral = True
-
     while not pocitac_odehral:  # hlavni smycka
         if prvni_kolo == False:  # podminka pro prvni tah PC
             pc_x = random.randint(4, 5)
@@ -205,6 +185,7 @@ def pocitac(prvni_kolo, nyni_pocitac, nyni_hrac, budouci):
             hraci_seznam[pc_y][pc_x] = "🟥"
             hraci_seznam_hodnoty[pc_y][pc_x] = "c"
             os.system("cls")
+            hodnoty()
             hraci_plocha()
             pocitac_odehral = True
 
@@ -220,23 +201,12 @@ def pocitac(prvni_kolo, nyni_pocitac, nyni_hrac, budouci):
                 nyni_pocitac, nyni_hrac = vyhodnoceni(nyni_pocitac, nyni_hrac)
 
                 if nyni_pocitac > pc_uktualne:  # tah je vhodny
-                    nenalezeno += 1
-                    if nenalezeno < 250 and souradnice in tahy_hrace:  # vhodny+blokace
-                        os.system("cls")
-                        hraci_plocha()
-                        pocitac_odehral = True
-                        nenalezeno = 0
-                        # print(tahy_hrace)
-                    elif nenalezeno > 250:  # uz jen vhodny
-                        os.system("cls")
-                        hraci_plocha()
-                        pocitac_odehral = True
-                        nenalezeno = 0
-                        # print(tahy_hrace)
-                    else:  #
-                        nyni_pocitac = pc_uktualne
-                        hraci_seznam[pc_y][pc_x] = "⬜️"
-                        hraci_seznam_hodnoty[pc_y][pc_x] = "n"
+                    # if pc_tah in tahy_hrace:
+                    os.system("cls")
+                    hraci_plocha()
+                    pocitac_odehral = True
+                    nenalezeno = 0
+                    print(tahy_hrace)
 
                 else:  # tah je nevhodny, bude generovat novou pozici
                     # 500 moznosti pak snizeni radu o 1
@@ -244,61 +214,45 @@ def pocitac(prvni_kolo, nyni_pocitac, nyni_hrac, budouci):
                     hraci_seznam_hodnoty[pc_y][pc_x] = "n"
                     nenalezeno += 1
                     print(nenalezeno)
-                    if nenalezeno > 400:
+                    if nenalezeno > 500:
                         nenalezeno = 0
                         nyni_pocitac -= 1
             else:  # kdyz je pole obsazene
                 nenalezeno += 1
 
-    return prvni_kolo, nyni_pocitac, nyni_hrac, budouci
+    return prvni_kolo, nyni_pocitac, nyni_hrac
 
 
-def pocitac_hrac(
-    nyni_hrac, nyni_pocitac, budouci, tahy_hrace
-):  # hleda vhodne pole hrace
-    budouci = 0  # hrac pravdepodobne v dalsim kole
-    tahy_hrace = []
+def pocitac_hrac(nyni_hrac, nyni_pocitac):  # hleda vhodne pole hrace
     hledani_tahu_pc = nyni_hrac
-    if nyni_hrac >= 1:  # hleda tah jen kdyz hrac ma 1 a vice(prvni kolo ne)
-        for hledani in range(500):
+    if nyni_hrac >= 1:
+        for hledani in range(200):
             pc_x = random.randint(0, 9)
             pc_y = random.randint(0, 9)
             pc_tah = hraci_seznam_hodnoty[pc_y][pc_x]
-            if pc_tah == "n":  # pole je volne, zapise z
+            if pc_tah == "n":
                 hraci_seznam_hodnoty[pc_y][pc_x] = "z"
                 nyni_pocitac, nyni_hrac = vyhodnoceni(nyni_pocitac, nyni_hrac)
                 hraci_seznam_hodnoty[pc_y][pc_x] = "n"
-                if nyni_hrac > hledani_tahu_pc:  # je vyssi nez predchazejici?
+                if nyni_hrac > hledani_tahu_pc:
                     souradnice_hrace = str(pc_x) + str(pc_y)
-                    tahy_hrace.append(
-                        souradnice_hrace
-                    )  # tak ulozi souradnice do seznamu
-                if budouci < nyni_hrac:  # do budouci zapise nejvyssi nalezeny pocet
-                    budouci = nyni_hrac
-            nyni_hrac = hledani_tahu_pc  # vrati promenou nyni_hrac do puvodniho stavu
-    print(tahy_hrace)
-    return nyni_hrac, nyni_pocitac, budouci, tahy_hrace
+                    tahy_hrace.append(souradnice_hrace)
+
+            nyni_hrac = hledani_tahu_pc
+    return nyni_hrac, nyni_pocitac
 
 
 while game:
-    nyni_hrac, nyni_pocitac, budouci, tahy_hrace = pocitac_hrac(
-        nyni_hrac, nyni_pocitac, budouci, tahy_hrace
-    )
-    print(tahy_hrace)
-    informace(prvni_kolo, nyni_pocitac, nyni_hrac, budouci)
-    prvni_kolo, nyni_pocitac, nyni_hrac, budouci = pocitac(
-        prvni_kolo, nyni_pocitac, nyni_hrac, budouci
-    )
+    nyni_hrac, nyni_pocitac = pocitac_hrac(nyni_hrac, nyni_pocitac)
+    prvni_kolo, nyni_pocitac, nyni_hrac = pocitac(prvni_kolo, nyni_pocitac, nyni_hrac)
+    tahy_hrace = []
     nyni_pocitac, nyni_hrac = vyhodnoceni(nyni_pocitac, nyni_hrac)
-    informace(prvni_kolo, nyni_pocitac, nyni_hrac, budouci)
+    informace(prvni_kolo, nyni_pocitac, nyni_hrac)
     if nyni_pocitac == 5:
         print("Pc vyhral!")
         break
     hrac()
-    print("dalsi kolo")
-    hodnoty()
     nyni_pocitac, nyni_hrac = vyhodnoceni(nyni_pocitac, nyni_hrac)
     if nyni_hrac == 5:
         print("Vyhral jsi!")
         break
-    informace(prvni_kolo, nyni_pocitac, nyni_hrac, budouci)

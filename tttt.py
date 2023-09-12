@@ -19,3 +19,10 @@
 #  ccc -= 1
 # for bbb in range(5 + aaa):
 #   print(bbb, ccc + bbb)
+
+cislo = 5
+
+if cislo < 5:
+    print("je mensi jak 10")
+elif cislo < 20:
+    print("je mensi jak 20")

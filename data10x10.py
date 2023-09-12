@@ -1,0 +1,43 @@
+moznosti_hrac_2 = [
+    "xzznnn",
+    "nnnzzx",
+    "xnzznn",
+    "nnzznx",
+    "xnnzzn",
+    "nzznnx",
+    "xnnnzz",
+    "zznnnx",
+    "zznnn",
+    "nzznn",
+    "nnzzn",
+    "nnnzz",
+    "xzznnnx",
+    "xnzznnx",
+    "xnnzznx",
+    "xnnnzzx",
+]
+moznosti_hrac_3 = [
+    "xzzznn",
+    "nnzzzx",
+    "xnzzzn",
+    "nzzznx",
+    "xnnzzz",
+    "zzznnx",
+    "zzznn",
+    "nzzzn",
+    "nnzzz",
+    "xzzznnx",
+    "xnzzznx",
+    "xnnzzzx",
+]
+
+moznosti_hrac_4 = [
+    "xzzzzn",
+    "nzzzzx",
+    "xnzzzz",
+    "zzzznx",
+    "zzzzn",
+    "nzzzz",
+    "xzzzznx",
+    "xnzzzzx",
+]
