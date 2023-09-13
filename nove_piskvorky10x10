@@ -1,5 +1,12 @@
 import os, random
-from data10x10 import moznosti_hrac_2, moznosti_hrac_3, moznosti_hrac_4
+from data10x10 import (
+    moznosti_hrac_2,
+    moznosti_hrac_3,
+    moznosti_hrac_4,
+    moznosti_pc_2,
+    moznosti_pc_3,
+    moznosti_pc_4,
+)
 
 os.system("cls")
 
@@ -118,54 +125,28 @@ def vyhodnoceni(nyni_pocitac, nyni_hrac):
         kombinace.append(jedna_kombinace)
         jedna_kombinace = ""
 
-    testovaci = 0
+    testovaci_hrac = 0
+    testovaci_pc = 0
 
     for seznam in kombinace:  # projde seznam kombinace
-        if (
-            "cc" in seznam
-            and nyni_pocitac < 2
-            and "zccz" not in seznam
-            and "zcccz" not in seznam
-            and "zccccz" not in seznam
-            and "xccccz" not in seznam
-            and "zccccx" not in seznam
-            and "zncccz" not in seznam
-            and "zcccnz" not in seznam
-            and "xncccz" not in seznam
-            and "zcccnx" not in seznam
-            and "znnccz" not in seznam
-            and "zccnnz" not in seznam
-            and "xnnccz" not in seznam
-            and "zccnnx" not in seznam
-            and "xcnccz" not in seznam
-            and "zccncx" not in seznam
-        ):
-            nyni_pocitac = 2
-        elif (
-            "ccc" in seznam
-            and nyni_pocitac < 3
-            and "zcccz" not in seznam
-            and "zccccz" not in seznam
-            and "xccccz" not in seznam
-            and "zccccx" not in seznam
-            and "zncccz" not in seznam
-            and "zcccnz" not in seznam
-            and "xncccz" not in seznam
-            and "zcccnx" not in seznam
-        ):
-            nyni_pocitac = 3
-        elif (
-            "cccc" in seznam
-            and nyni_pocitac < 4
-            and "zccccz" not in seznam
-            and "xccccz" not in seznam
-            and "zccccx" not in seznam
-        ):
-            nyni_pocitac = 4
-        elif "ccccc" in seznam:
+        if "c" in seznam:  # pro pc
+            nyni_pocitac = 1
+        for moznosti2 in moznosti_pc_2:
+            if moznosti2 in seznam:
+                nyni_pocitac = 2
+        for moznosti3 in moznosti_pc_3:
+            if moznosti3 in seznam:
+                nyni_pocitac = 3
+        for moznosti4 in moznosti_pc_4:
+            if moznosti4 in seznam:
+                nyni_pocitac = 4
+        if "ccccc" in seznam:
             nyni_pocitac = 5
 
-        if "z" in seznam:
+        if testovaci_pc < nyni_pocitac:
+            testovaci_pc = nyni_pocitac
+
+        if "z" in seznam:  # pro hrace
             nyni_hrac = 1
         for moznosti2 in moznosti_hrac_2:
             if moznosti2 in seznam:
@@ -178,10 +159,11 @@ def vyhodnoceni(nyni_pocitac, nyni_hrac):
                 nyni_hrac = 4
         if "zzzzz" in seznam:
             nyni_hrac = 5
+        if testovaci_hrac < nyni_hrac:
+            testovaci_hrac = nyni_hrac
+    nyni_hrac = testovaci_hrac
+    nyni_pocitac = testovaci_pc
 
-        if testovaci < nyni_hrac:
-            testovaci = nyni_hrac
-    nyni_hrac = testovaci
     return nyni_pocitac, nyni_hrac
 
 
@@ -253,12 +235,11 @@ def pocitac(prvni_kolo, nyni_pocitac, nyni_hrac, budouci):
     return prvni_kolo, nyni_pocitac, nyni_hrac, budouci
 
 
-def pocitac_hrac(
-    nyni_hrac, nyni_pocitac, budouci, tahy_hrace
-):  # hleda vhodne pole hrace
-    budouci = 0  # hrac pravdepodobne v dalsim kole
-    tahy_hrace = []
-    hledani_tahu_pc = nyni_hrac
+def pocitac_hrac(nyni_hrac, nyni_pocitac, budouci, tahy_hrace):
+    nyni_pocitac, nyni_hrac = vyhodnoceni(nyni_pocitac, nyni_hrac)
+    budouci = 0  # hrac v dalsim kole
+    tahy_hrace = []  # seznam moznych tahu
+    hledani_tahu_pc = nyni_hrac  # do promenne zapisi aktualni pocet
     if nyni_hrac >= 1:  # hleda tah jen kdyz hrac ma 1 a vice(prvni kolo ne)
         for hledani in range(500):
             pc_x = random.randint(0, 9)
@@ -270,13 +251,10 @@ def pocitac_hrac(
                 hraci_seznam_hodnoty[pc_y][pc_x] = "n"
                 if nyni_hrac > hledani_tahu_pc:  # je vyssi nez predchazejici?
                     souradnice_hrace = str(pc_x) + str(pc_y)
-                    tahy_hrace.append(
-                        souradnice_hrace
-                    )  # tak ulozi souradnice do seznamu
+                    tahy_hrace.append(souradnice_hrace)  # ulozi souradnice do seznamu
                 if budouci < nyni_hrac:  # do budouci zapise nejvyssi nalezeny pocet
                     budouci = nyni_hrac
-            nyni_hrac = hledani_tahu_pc  # vrati promenou nyni_hrac do puvodniho stavu
-    print(tahy_hrace)
+        nyni_hrac = hledani_tahu_pc  # vrati promenou nyni_hrac do puvodniho stavu
     return nyni_hrac, nyni_pocitac, budouci, tahy_hrace
 
 
@@ -285,18 +263,21 @@ while game:
         nyni_hrac, nyni_pocitac, budouci, tahy_hrace
     )
     print(tahy_hrace)
-    informace(prvni_kolo, nyni_pocitac, nyni_hrac, budouci)
+
     prvni_kolo, nyni_pocitac, nyni_hrac, budouci = pocitac(
         prvni_kolo, nyni_pocitac, nyni_hrac, budouci
     )
-    nyni_pocitac, nyni_hrac = vyhodnoceni(nyni_pocitac, nyni_hrac)
+
+    nyni_hrac, nyni_pocitac, budouci, tahy_hrace = pocitac_hrac(
+        nyni_hrac, nyni_pocitac, budouci, tahy_hrace
+    )
     informace(prvni_kolo, nyni_pocitac, nyni_hrac, budouci)
     if nyni_pocitac == 5:
         print("Pc vyhral!")
         break
     hrac()
+
     print("dalsi kolo")
-    hodnoty()
     nyni_pocitac, nyni_hrac = vyhodnoceni(nyni_pocitac, nyni_hrac)
     if nyni_hrac == 5:
         print("Vyhral jsi!")
