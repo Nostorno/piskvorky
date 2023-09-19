@@ -175,7 +175,7 @@ def pocitac(prvni_kolo, nyni_pocitac, nyni_hrac, budouci):
         pc_y = int(tahy_hrace[0][1])
         hraci_seznam[pc_y][pc_x] = "🟥"
         hraci_seznam_hodnoty[pc_y][pc_x] = "c"
-        os.system("cls")
+        # os.system("cls")
         hraci_plocha()
         pocitac_odehral = True
 
@@ -186,7 +186,7 @@ def pocitac(prvni_kolo, nyni_pocitac, nyni_hrac, budouci):
             prvni_kolo = True
             hraci_seznam[pc_y][pc_x] = "🟥"
             hraci_seznam_hodnoty[pc_y][pc_x] = "c"
-            os.system("cls")
+            # os.system("cls")
             hraci_plocha()
             pocitac_odehral = True
 
@@ -204,13 +204,13 @@ def pocitac(prvni_kolo, nyni_pocitac, nyni_hrac, budouci):
                 if nyni_pocitac > pc_uktualne:  # tah je vhodny
                     nenalezeno += 1
                     if nenalezeno < 250 and souradnice in tahy_hrace:  # vhodny+blokace
-                        os.system("cls")
+                        # os.system("cls")
                         hraci_plocha()
                         pocitac_odehral = True
                         nenalezeno = 0
                         # print(tahy_hrace)
                     elif nenalezeno > 250:  # uz jen vhodny
-                        os.system("cls")
+                        # os.system("cls")
                         hraci_plocha()
                         pocitac_odehral = True
                         nenalezeno = 0
