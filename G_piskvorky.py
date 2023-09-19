@@ -12,6 +12,7 @@ nyni_pocitac = 0
 budouci = 0
 prvni_kolo = False
 hraj = False
+vyherce = ""
 
 hraci_okno = Screen()
 hraci_okno.title("Hrajeme piskvorky")
@@ -32,6 +33,13 @@ kurzor.shape("circle")
 kurzor.penup()
 kurzor.speed(150)
 kurzor.setpos(-250, 250)
+
+# nastaveni informaci
+info = Turtle()
+info.penup()
+info.goto(0, 260)
+info.color("white")
+
 # vykresleni herniho pole
 kurzor.pendown()
 kurzor.pensize(5)
@@ -74,7 +82,7 @@ def hodnoty():  # vypise hodnoty hraci plochy !! klavesa H !!
                 print(hraci_seznam_hodnoty[radek][sloupec], end="")
             elif sloupec == 9:
                 print(hraci_seznam_hodnoty[radek][sloupec])
-    time.sleep(3)
+    time.sleep(4)
 
 
 def hrac():  # hrac obsadi policko
@@ -88,7 +96,7 @@ def hrac():  # hrac obsadi policko
         obarveni_pole_hrac()
         vyhodnoceni()
         print("obsadil jsi volne pole")
-        time.sleep(3)
+        time.sleep(0)
         hraj = False
 
 
@@ -97,14 +105,14 @@ def pocitac():
     pocitac_odehral = False  # zda PC odehral
     hraj = True
     nenalezeno = 0  # pocet opakovani v pripade nevhodneho tahu
-    # if budouci > 3:  # hrac +3, pole vybrano ze seznamu
-    # pc_x = int(tahy_hrace[0][0])
-    # pc_y = int(tahy_hrace[0][1])
-    # hraci_seznam[pc_y][pc_x] = "🟥"
-    # hraci_seznam_hodnoty[pc_y][pc_x] = "c"
-    # os.system("cls")
-    # hraci_plocha()
-    # pocitac_odehral = True
+    if budouci > 3:  # hrac +3, pole vybrano ze seznamu
+        pc_x = int(tahy_hrace[0][0])
+        pc_y = int(tahy_hrace[0][1])
+        pc_x_graf = (pc_x * 50) - 225
+        pc_y_graf = ((pc_y * 50) - 225) * -1
+        obarveni_pole_pc()
+        hraci_seznam_hodnoty[pc_y][pc_x] = "c"
+        pocitac_odehral = True
 
     while not pocitac_odehral:  # hlavni smycka
         if prvni_kolo == False:  # podminka pro prvni tah PC
@@ -345,6 +353,13 @@ def obarveni_pole_pc():
     pc.fillcolor("black")
 
 
+def zobrazeni_vyherce():
+    info.clear()
+    info.color("black")
+    info.write(vyherce, align="center", font=("Arial", 25, "normal"))
+    info.color("white")
+
+
 # kliknutim na klavesy
 hraci_okno.listen()
 hraci_okno.onkeypress(pohyb_right, "Right")
@@ -357,14 +372,28 @@ hraci_okno.onkeypress(pocitac, "p")
 
 # hlavni cyklus
 for pocet_kol in range(50):
-    hraci_okno.update()
     pocitac_hrac()
     pocitac()
+    if nyni_pocitac == 5:
+        vyherce = "VYHRAL POCITAC"
+        zobrazeni_vyherce()
+        hraci_okno.update()
+        break
     while hraj == True:
-        print(f"x:{x_osa} y:{y_osa} hrac:{nyni_hrac} pocitac: {nyni_pocitac}")
+        if nyni_hrac == 5:
+            vyherce = "ZVITEZIL JSI"
+            break
+        print(
+            f"x:{x_osa} y:{y_osa} hrac:{nyni_hrac} pocitac: {nyni_pocitac} budouci: {budouci}"
+        )
+        print(tahy_hrace)
         time.sleep(0.1)
         hraci_okno.update()
-
+    if nyni_hrac == 5:
+        vyherce = "ZVITEZIL JSI"
+        zobrazeni_vyherce()
+        hraci_okno.update()
+        break
 
 hraci_okno.update()
 hraci_okno.exitonclick()
