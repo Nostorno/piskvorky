@@ -1,3 +1,8 @@
+# move - right arrow and lef arow
+# new time - space
+# result - enter
+
+
 from turtle import Turtle, Screen
 import time, random
 
