@@ -277,7 +277,6 @@ def vyhodnoceni():
 
     nyni_hrac = testovaci_hrac
     nyni_pocitac = testovaci_pc
-    return nyni_hrac, nyni_pocitac
 
 
 # pohyb po hraci plose
