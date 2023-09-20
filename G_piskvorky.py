@@ -91,28 +91,46 @@ def hodnoty():
 
 
 def hrac():  # hrac obsadi policko
-    global hraj
+    global hraj, nyni_hrac, nyni_pocitac, budouci
     tah = hraci_seznam_hodnoty[y_osa][x_osa]
     if tah == "z" or tah == "c":
         print("policko je jiz obsazene!")
-        time.sleep(1)
     elif tah == "n":
         hraci_seznam_hodnoty[y_osa][x_osa] = "z"
         obarveni_pole_hrac()
-        vyhodnoceni()
         print("obsadil jsi volne pole")
-        time.sleep(0)
         hraj = False
 
 
 def pocitac():
-    global prvni_kolo, pc_x_graf, pc_y_graf, nyni_pocitac, hraj, tahy_hrace, budouci
+    global prvni_kolo, pc_x_graf, pc_y_graf, hraj, tahy_hrace, budouci, tahy_hrace, nyni_hrac, nyni_pocitac
+    nyni_pocitac = 1
+    nyni_hrac = 1
+    vyhodnoceni()
+    budouci = 0  # hrac v dalsim kole
+    tahy_hrace = []  # seznam moznych tahu
+    hledani_tahu_pc = nyni_hrac  # zapise aktualni pocet
+    if nyni_hrac >= 1:  # hleda tah jen kdyz hrac ma 2 a vice
+        for hledani in range(500):
+            pc_x = random.randint(0, 9)
+            pc_y = random.randint(0, 9)
+            pc_tah = hraci_seznam_hodnoty[pc_y][pc_x]
+            if pc_tah == "n":  # pole je volne, zapise z
+                hraci_seznam_hodnoty[pc_y][pc_x] = "z"
+                vyhodnoceni()
+                hraci_seznam_hodnoty[pc_y][pc_x] = "n"
+                if nyni_hrac > hledani_tahu_pc:  # je vyssi nez predchazejici?
+                    souradnice_hrace = str(pc_x) + str(pc_y)
+                    tahy_hrace.append(souradnice_hrace)  # ulozi souradnice do seznamu
+                if budouci < nyni_hrac:  # do budouci zapise nejvyssi nalezeny pocet
+                    budouci = nyni_hrac
+            nyni_hrac = hledani_tahu_pc  # vrati promenou nyni_hrac do puvodniho stavu
     pocitac_odehral = False  # zda PC odehral
     hraj = True
     nenalezeno = 0  # pocet opakovani v pripade nevhodneho tahu
-    if (
-        budouci > 3 and nyni_pocitac < 4 and len(tahy_hrace) > 0
-    ):  # hrac +3, pole vybrano ze seznamu
+    vyhodnoceni()
+    # hrac +3, pole vybrano ze seznamu
+    if budouci >= 3 and nyni_pocitac < nyni_hrac and len(tahy_hrace) > 0:
         pc_x = int(tahy_hrace[0][0])
         pc_y = int(tahy_hrace[0][1])
         pc_x_graf = (pc_x * 50) - 225
@@ -133,6 +151,7 @@ def pocitac():
             pc_y_graf = ((pc_y * 50) - 225) * -1
             obarveni_pole_pc()
             hraci_seznam_hodnoty[pc_y][pc_x] = "c"
+            vyhodnoceni()
             pocitac_odehral = True
 
         else:  # dalsi kola
@@ -168,38 +187,11 @@ def pocitac():
                     hraci_seznam_hodnoty[pc_y][pc_x] = "n"
                     nenalezeno += 1
                     # print(nenalezeno)
-                    if nenalezeno > 400:
+                    if nenalezeno > 500:
                         nenalezeno = 0
                         nyni_pocitac -= 1
             else:  # kdyz je pole obsazene
                 nenalezeno += 1
-
-    return
-
-
-def pocitac_hrac():
-    global budouci, tahy_hrace, nyni_hrac
-    vyhodnoceni()
-    budouci = 0  # hrac v dalsim kole
-    tahy_hrace = []  # seznam moznych tahu
-    hledani_tahu_pc = nyni_hrac  # zapise aktualni pocet
-    if nyni_hrac > 1:  # hleda tah jen kdyz hrac ma 2 a vice
-        for hledani in range(500):
-            pc_x = random.randint(0, 9)
-            pc_y = random.randint(0, 9)
-            pc_tah = hraci_seznam_hodnoty[pc_y][pc_x]
-            if pc_tah == "n":  # pole je volne, zapise z
-                hraci_seznam_hodnoty[pc_y][pc_x] = "z"
-                vyhodnoceni()
-                hraci_seznam_hodnoty[pc_y][pc_x] = "n"
-                if nyni_hrac > hledani_tahu_pc:  # je vyssi nez predchazejici?
-                    souradnice_hrace = str(pc_x) + str(pc_y)
-                    tahy_hrace.append(souradnice_hrace)  # ulozi souradnice do seznamu
-                if budouci < nyni_hrac:  # do budouci zapise nejvyssi nalezeny pocet
-                    budouci = nyni_hrac
-            nyni_hrac = hledani_tahu_pc  # vrati promenou nyni_hrac do puvodniho stavu
-
-    return
 
 
 def vyhodnoceni():
@@ -285,6 +277,7 @@ def vyhodnoceni():
 
     nyni_hrac = testovaci_hrac
     nyni_pocitac = testovaci_pc
+    return nyni_hrac, nyni_pocitac
 
 
 # pohyb po hraci plose
@@ -381,7 +374,6 @@ hraci_okno.onkeypress(hodnoty, "h")
 
 # hlavni cyklus
 for pocet_kol in range(50):
-    pocitac_hrac()
     pocitac()
     if nyni_pocitac == 5:
         vyherce = "VYHRAL POCITAC"
@@ -391,10 +383,7 @@ for pocet_kol in range(50):
     while hraj == True:
         if nyni_hrac == 5:
             break
-        print(
-            f"x:{x_osa} y:{y_osa} hrac:{nyni_hrac} pocitac: {nyni_pocitac} budouci: {budouci}"
-        )
-        print(tahy_hrace)
+        # print(f"x:{x_osa} y:{y_osa} hrac:{nyni_hrac} pocitac: {nyni_pocitac} budouci: {budouci}")
         time.sleep(0.1)
         hraci_okno.update()
     if nyni_hrac == 5:
