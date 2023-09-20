@@ -106,11 +106,13 @@ def hrac():  # hrac obsadi policko
 
 
 def pocitac():
-    global prvni_kolo, pc_x_graf, pc_y_graf, nyni_pocitac, hraj, tahy_hrace
+    global prvni_kolo, pc_x_graf, pc_y_graf, nyni_pocitac, hraj, tahy_hrace, budouci
     pocitac_odehral = False  # zda PC odehral
     hraj = True
     nenalezeno = 0  # pocet opakovani v pripade nevhodneho tahu
-    if budouci > 3 and len(tahy_hrace) > 0:  # hrac +3, pole vybrano ze seznamu
+    if (
+        budouci > 3 and nyni_pocitac < 4 and len(tahy_hrace) > 0
+    ):  # hrac +3, pole vybrano ze seznamu
         pc_x = int(tahy_hrace[0][0])
         pc_y = int(tahy_hrace[0][1])
         pc_x_graf = (pc_x * 50) - 225
@@ -118,6 +120,8 @@ def pocitac():
         obarveni_pole_pc()
         hraci_seznam_hodnoty[pc_y][pc_x] = "c"
         pocitac_odehral = True
+        vyhodnoceni()
+        budouci = nyni_hrac
         tahy_hrace = []
 
     while not pocitac_odehral:  # hlavni smycka
@@ -387,8 +391,10 @@ for pocet_kol in range(50):
     while hraj == True:
         if nyni_hrac == 5:
             break
-        # print(f"x:{x_osa} y:{y_osa} hrac:{nyni_hrac} pocitac: {nyni_pocitac} budouci: {budouci}")
-        # print(tahy_hrace)
+        print(
+            f"x:{x_osa} y:{y_osa} hrac:{nyni_hrac} pocitac: {nyni_pocitac} budouci: {budouci}"
+        )
+        print(tahy_hrace)
         time.sleep(0.1)
         hraci_okno.update()
     if nyni_hrac == 5:
