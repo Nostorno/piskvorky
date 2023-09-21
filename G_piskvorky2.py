@@ -9,12 +9,8 @@ x_osa = 0  # aktualni pozice hrace v radku (0-9)
 y_osa = 0  # sloupci
 hraci_seznam_hodnoty = []  # seznam hodnot policek (n,z,c)
 tahy_hrace = []  # souradnice vhodnych tahu
-# nyni_hrac = 0  # max hrace v rade
-# nyni_pocitac = 0  # max pc v rade
-# budouci = 0  # max hrac v dalsim kole
 prvni_kolo = False  # prvni kolo pc
 hraj = False  # zda hrac odehral
-# vyherce = ""  # text pro vyhodnoceni vyherce
 
 # nastaveni hraciho okna
 hraci_okno = Screen()
@@ -91,7 +87,7 @@ def hodnoty():
 
 
 def hrac():  # hrac obsadi policko
-    global hraj, nyni_hrac, nyni_pocitac, budouci
+    global hraj, nyni_hrac, nyni_pocitac
     tah = hraci_seznam_hodnoty[y_osa][x_osa]
     if tah == "z" or tah == "c":
         print("policko je jiz obsazene!")
@@ -109,37 +105,85 @@ def pocitac():
     vyhodnoceni()
     budouci = 0  # hrac v dalsim kole
     tahy_hrace = []  # seznam moznych tahu
+    tahy_hrace_nutne = []
     hledani_tahu_pc = nyni_hrac  # zapise aktualni pocet
-    if nyni_hrac >= 1:  # hleda tah jen kdyz hrac ma 2 a vice
-        for hledani in range(500):
-            pc_x = random.randint(0, 9)
-            pc_y = random.randint(0, 9)
-            pc_tah = hraci_seznam_hodnoty[pc_y][pc_x]
-            if pc_tah == "n":  # pole je volne, zapise z
-                hraci_seznam_hodnoty[pc_y][pc_x] = "z"
-                vyhodnoceni()
-                hraci_seznam_hodnoty[pc_y][pc_x] = "n"
-                if nyni_hrac > hledani_tahu_pc:  # je vyssi nez predchazejici?
-                    souradnice_hrace = str(pc_x) + str(pc_y)
-                    tahy_hrace.append(souradnice_hrace)  # ulozi souradnice do seznamu
-                if budouci < nyni_hrac:  # do budouci zapise nejvyssi nalezeny pocet
-                    budouci = nyni_hrac
-            nyni_hrac = hledani_tahu_pc  # vrati promenou nyni_hrac do puvodniho stavu
+    for hledani in range(500):
+        pc_x = random.randint(0, 9)
+        pc_y = random.randint(0, 9)
+        pc_tah = hraci_seznam_hodnoty[pc_y][pc_x]
+        if pc_tah == "n":  # pole je volne, zapise z
+            hraci_seznam_hodnoty[pc_y][pc_x] = "z"
+            vyhodnoceni()
+            hraci_seznam_hodnoty[pc_y][pc_x] = "n"
+            if nyni_hrac > hledani_tahu_pc:  # je vyssi nez predchazejici?
+                souradnice_hrace = str(pc_x) + str(pc_y)
+                tahy_hrace.append(souradnice_hrace)  # ulozi souradnice do seznamu
+            if nyni_hrac > (hledani_tahu_pc + 1):
+                souradnice_hrace = str(pc_x) + str(pc_y)
+                tahy_hrace_nutne.append(souradnice_hrace)
+            if budouci < nyni_hrac:  # do budouci zapise nejvyssi nalezeny pocet
+                budouci = nyni_hrac
+        nyni_hrac = hledani_tahu_pc  # vrati promenou nyni_hrac do puvodniho stavu
     pocitac_odehral = False  # zda PC odehral
     hraj = True
     nenalezeno = 0  # pocet opakovani v pripade nevhodneho tahu
-    # hrac +3, pole vybrano ze seznamu
-    if budouci >= 3 and nyni_pocitac < nyni_hrac and len(tahy_hrace) > 0:
-        pc_x = int(tahy_hrace[0][0])
-        pc_y = int(tahy_hrace[0][1])
-        pc_x_graf = (pc_x * 50) - 225
-        pc_y_graf = ((pc_y * 50) - 225) * -1
-        obarveni_pole_pc()
-        hraci_seznam_hodnoty[pc_y][pc_x] = "c"
-        pocitac_odehral = True
-        vyhodnoceni()
-        budouci = nyni_hrac
-        tahy_hrace = []
+    print(nyni_hrac, nyni_pocitac, budouci)
+    print(tahy_hrace)
+    print(tahy_hrace_nutne)
+    time.sleep(3)
+    if (
+        nyni_pocitac < nyni_hrac
+        or nyni_pocitac == nyni_hrac
+        and (budouci - nyni_pocitac) > 1
+        or budouci == 5
+        and (nyni_pocitac - nyni_hrac) == 1
+    ):
+        if len(tahy_hrace_nutne) > 0:
+            print("nutne")
+            pc_x = int(tahy_hrace_nutne[0][0])
+            pc_y = int(tahy_hrace_nutne[0][1])
+            hraci_seznam_hodnoty[pc_y][pc_x] = "c"
+            pc_x_graf = (pc_x * 50) - 225
+            pc_y_graf = ((pc_y * 50) - 225) * -1
+            obarveni_pole_pc()
+            pocitac_odehral = True
+            tahy_hrace = []
+            tahy_hrace_nutne = []
+
+        else:
+            print("pouze pole")
+            kolik_tahu_je = len(tahy_hrace)
+            aaa = nyni_pocitac
+            for bonus in range(kolik_tahu_je):
+                pc_x = int(tahy_hrace[bonus][0])
+                pc_y = int(tahy_hrace[bonus][1])
+                hraci_seznam_hodnoty[pc_y][pc_x] = "c"
+                vyhodnoceni()
+                if nyni_pocitac > aaa:
+                    pc_x_graf = (pc_x * 50) - 225
+                    pc_y_graf = ((pc_y * 50) - 225) * -1
+                    obarveni_pole_pc()
+                    pocitac_odehral = True
+                    # vyhodnoceni()
+                    # budouci = nyni_hrac
+                    tahy_hrace = []
+                    tahy_hrace_nutne = []
+                    break
+                else:
+                    hraci_seznam_hodnoty[pc_y][pc_x] = "n"
+
+            if aaa == nyni_pocitac:
+                pc_x = int(tahy_hrace[0][0])
+                pc_y = int(tahy_hrace[0][1])
+                pc_x_graf = (pc_x * 50) - 225
+                pc_y_graf = ((pc_y * 50) - 225) * -1
+                obarveni_pole_pc()
+                hraci_seznam_hodnoty[pc_y][pc_x] = "c"
+                pocitac_odehral = True
+                vyhodnoceni()
+                budouci = nyni_hrac
+                tahy_hrace = []
+                tahy_hrace_nutne = []
 
     while not pocitac_odehral:  # hlavni smycka
         if prvni_kolo == False:  # podminka pro prvni tah PC
@@ -368,6 +412,7 @@ hraci_okno.onkeypress(hrac, "space")
 hraci_okno.onkeypress(hodnoty, "h")
 
 # hlavni cyklus
+# global nyni_hrac, nyni_pocitac, budouci
 for pocet_kol in range(50):
     pocitac()
     if nyni_pocitac == 5:

@@ -12,9 +12,17 @@ moznosti_hrac_2 = [
     "nnzzn",
     "nnnzz",
     "xzznnnx",
+    "xzznznx",
+    "xzznzzx",
+    "xnznzzx",
     "xnzznnx",
     "xnnzznx",
     "xnnnzzx",
+    "nzznzc",
+    "cznzzn",
+    "zznnzz",
+    "nzznzn",
+    "nznzzn",
 ]
 moznosti_hrac_3 = [
     "xzzznn",
@@ -29,6 +37,9 @@ moznosti_hrac_3 = [
     "xzzznnx",
     "xnzzznx",
     "xnnzzzx",
+    "znzzz",
+    "zzznz",
+    "xzzznzx" "xznzzzx" "cnzzznc" "czzznnc" "cnnzzzc",
 ]
 
 moznosti_hrac_4 = [
