@@ -1,5 +1,4 @@
 # ovladani - sipky / mezernik - obsazeni pole
-
 from turtle import Turtle, Screen
 import random, time
 from data10x10 import moznosti_hrac_2, moznosti_hrac_3, moznosti_hrac_4
@@ -64,26 +63,10 @@ for aaa in range(11):
 kurzor.penup()
 kurzor.setpos(-225, 225)
 
-
-# funkce vytvoreni seznamu hodnot
-def vytvoreni_seznamu():
-    for cislo in range(10):
-        rada = ["n"] * 10
-        hraci_seznam_hodnoty.append(rada)
-
-
-vytvoreni_seznamu()
-
-
-# vypise hodnoty hraci plochy !! klavesa H !!
-def hodnoty():
-    for radek in range(0, 10):
-        for sloupec in range(0, 10):
-            if sloupec < 9:
-                print(hraci_seznam_hodnoty[radek][sloupec], end="")
-            elif sloupec == 9:
-                print(hraci_seznam_hodnoty[radek][sloupec])
-    time.sleep(4)
+# vytvoreni seznamu hodnot
+for cislo in range(10):
+    rada = ["n"] * 10
+    hraci_seznam_hodnoty.append(rada)
 
 
 def hrac():  # hrac obsadi policko
@@ -127,10 +110,6 @@ def pocitac():
     pocitac_odehral = False  # zda PC odehral
     hraj = True
     nenalezeno = 0  # pocet opakovani v pripade nevhodneho tahu
-    print(nyni_hrac, nyni_pocitac, budouci)
-    print(tahy_hrace)
-    print(tahy_hrace_nutne)
-    time.sleep(3)
     if (
         nyni_pocitac < nyni_hrac
         or nyni_pocitac == nyni_hrac
@@ -139,7 +118,6 @@ def pocitac():
         and (nyni_pocitac - nyni_hrac) == 1
     ):
         if len(tahy_hrace_nutne) > 0:
-            print("nutne")
             pc_x = int(tahy_hrace_nutne[0][0])
             pc_y = int(tahy_hrace_nutne[0][1])
             hraci_seznam_hodnoty[pc_y][pc_x] = "c"
@@ -151,7 +129,6 @@ def pocitac():
             tahy_hrace_nutne = []
 
         else:
-            print("pouze pole")
             kolik_tahu_je = len(tahy_hrace)
             aaa = nyni_pocitac
             for bonus in range(kolik_tahu_je):
@@ -164,8 +141,6 @@ def pocitac():
                     pc_y_graf = ((pc_y * 50) - 225) * -1
                     obarveni_pole_pc()
                     pocitac_odehral = True
-                    # vyhodnoceni()
-                    # budouci = nyni_hrac
                     tahy_hrace = []
                     tahy_hrace_nutne = []
                     break
@@ -180,8 +155,6 @@ def pocitac():
                 obarveni_pole_pc()
                 hraci_seznam_hodnoty[pc_y][pc_x] = "c"
                 pocitac_odehral = True
-                vyhodnoceni()
-                budouci = nyni_hrac
                 tahy_hrace = []
                 tahy_hrace_nutne = []
 
@@ -409,10 +382,8 @@ hraci_okno.onkeypress(pohyb_left, "Left")
 hraci_okno.onkeypress(pohyb_down, "Down")
 hraci_okno.onkeypress(pohyb_up, "Up")
 hraci_okno.onkeypress(hrac, "space")
-hraci_okno.onkeypress(hodnoty, "h")
 
 # hlavni cyklus
-# global nyni_hrac, nyni_pocitac, budouci
 for pocet_kol in range(50):
     pocitac()
     if nyni_pocitac == 5:
@@ -424,9 +395,6 @@ for pocet_kol in range(50):
         if nyni_hrac == 5:
             break
         time.sleep(0.1)
-        print(
-            f"x:{x_osa} y:{y_osa} hrac:{nyni_hrac} pocitac: {nyni_pocitac} budouci: {budouci}"
-        )
         hraci_okno.update()
     if nyni_hrac == 5:
         vyherce = "ZVITEZIL JSI"
@@ -435,4 +403,3 @@ for pocet_kol in range(50):
         break
 
 hraci_okno.exitonclick()
-# print(f"x:{x_osa} y:{y_osa} hrac:{nyni_hrac} pocitac: {nyni_pocitac} budouci: {budouci}")
